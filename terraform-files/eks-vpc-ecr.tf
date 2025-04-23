@@ -5,16 +5,15 @@ module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
   
+  name                   = var.name
+  cidr                   = var.vpc_cidr_block
 
-  name = var.name
-  cidr = var.vpc_cidr_block
+  azs                    = data.aws_availability_zone.azs.name
+  public_subnets         = var.public_subnet_cidr_blocks
+  private_subnets        = var.private_subnet_cidr_blocks
 
-  azs = data.aws_availability_zone.azs.name
-  public_subnets = var.public_subnet_cidr_blocks
-  private_subnets = var.private_subnet_cidr_blocks
-
-  enable_nat_gateway = true
-  single_nat_gateway = true
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
   one_nat_gateway_per_az = false
 
   public_subnet_tags = {
@@ -58,13 +57,14 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    default = {
+    initial = {
       min_size = 2
       max_size = 4
       desired_size = 2
       instance_types = ["t3.small"]
     }
   }
+
   tags = var.tags
 }
 
