@@ -76,7 +76,7 @@ module "ecr" {
   registry_scan_type          = "BASIC"
   repository_type             = "private"
 
-  repository_lifecycle_policy =  false
+  create_lifecycle_policy     = false
 
   tags = {
     Terraform = true
