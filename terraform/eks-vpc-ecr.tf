@@ -1,5 +1,5 @@
 # VPC for Cluster
-data "aws_availability_zone" "azs" {}
+data "aws_availability_zones" "azs" {}
 
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
@@ -8,7 +8,7 @@ module "vpc" {
   name                   = var.name
   cidr                   = var.vpc_cidr_block
 
-  azs                    = data.aws_availability_zone.azs.name
+  azs                    = data.aws_availability_zones.azs.names
   public_subnets         = var.public_subnet_cidr_blocks
   private_subnets        = var.private_subnet_cidr_blocks
 
