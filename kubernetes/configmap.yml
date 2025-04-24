@@ -4,4 +4,6 @@ metadata:
   name: app-config
 data:
   MYSQL_DATABASE: contactform
-  S3_BUCKER_NAME: 
+  S3_BUCKER_NAME: freedevopsclass-mybucket
+  REGION        : us-east-1
+  db-url        : mysql-service
