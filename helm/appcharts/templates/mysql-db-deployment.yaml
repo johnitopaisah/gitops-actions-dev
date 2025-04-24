@@ -13,35 +13,35 @@ spec:
         app: mysql-db
     spec:
       containers:
-      - name: mysql-db
-        image: mysql:8.0.36
-        ports:
-          - containerPort: 3306
-        env:
-          - name: MYSQL_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: db-secret
-                key: MYSQL_ROOT_PASSWORD
-          - name: MYSQL_DATABASE
-            valueFrom:
-              ConfigMapKeyRef:
-                name: app-config
-                key: MYSQL_DATABASE
-          - name: MYSQL_USER
-            valueFrom:
-              secretKeyRef:
-                name: db-secret
-                key: MYSQL_USER
-          - name: MYSQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: db-secret
-                key: MYSQL_PASSWORD
-        volumeMounts:
-          - name: mysql-data
-            mountPath: /var/lib/mysql
+        - name: mysql-db
+          image: mysql:8.0.36
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MYSQL_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: MYSQL_PASSWORD
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
-            claimName: mysql-pvc      
+            claimName: mysql-pvc

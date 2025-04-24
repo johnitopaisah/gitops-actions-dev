@@ -3,29 +3,28 @@ kind: Ingress
 metadata:
   name: webapp-ingress
   annotations:
-    nginx.ingress.kubernetes.io/use-regrex: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"  # fixed typo: 'regrex' → 'regex'
 spec:
   ingressClassName: nginx
   rules:
-  - host: webapp.johnisah.com
-    http:
-      paths:
-      - pathtype: Prefix
-        path: /
-        backend:
-          service:
-            name: php-app-service
-            namespace: default
-            port:
-              number: 80
-  - host: phpmyadmin.johnisah.com
-    http:
-      paths:
-      - pathtype: Prefix
-        path: /
-        backend:
-          service:
-            name: phpmyadmin-service
-            namespace: default
-            port:
-              number: 8081
+    - host: webapp.johnisah.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: php-app-service
+                port:
+                  number: 80
+
+    - host: phpmyadmin.johnisah.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: phpmyadmin-service
+                port:
+                  number: 8081
