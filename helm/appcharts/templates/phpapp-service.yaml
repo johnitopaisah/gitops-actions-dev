@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: php-app-service
 spec:
-  type: Cluster
+  type: ClusterIP
   selector:
     app: php-app
   ports:

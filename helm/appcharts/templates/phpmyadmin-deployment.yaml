@@ -18,7 +18,7 @@ spec:
         ports:
         - containerPort: 80
         env:
-        - names:
+        - name: PMA_HOST
           valueFrom:
             configMapKeyRef:
               name: app-config
