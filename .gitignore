@@ -2,3 +2,5 @@
 DS_Store
 .env
 app/.env
+.vscode
+backup*

@@ -1,0 +1,31 @@
+appVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webapp-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regrex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: webapp.johnisah.com
+    http:
+      paths:
+      - pathtype: Prefix
+        path: /
+        backend:
+          service:
+            name: php-app-service
+            namespace: default
+            port:
+              number: 80
+  - host: phpmyadmin.johnisah.com
+    http:
+      paths:
+      - pathtype: Prefix
+        path: /
+        backend:
+          service:
+            name: phpmyadmin.service
+            namespace: default
+            port:
+              number: 80

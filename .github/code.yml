@@ -1,0 +1,72 @@
+name: webapp-actions
+on:
+  push:
+    branches:
+      - main
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  EKS_CLUSTER: ${{ vars.EKS_CLUSTER_NAME }}
+
+jobs:
+  BuildandPush:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v4
+
+      - name: Build & Upload image to ECR
+        uses: appleboy/docker-ecr-action@mater
+        with:
+          aaccess-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          registry: ${{ secrets.REGISTRY }}
+          repo: ${{ env.ECR_REPOSITORY }}
+          region: ${{ env.AWS_REGION }}
+          tag: latest,${{ github.run_number }}
+          deamon_off: false
+          dockerfile: ./Dockerfile
+          context: ./
+DeployToEKS:
+  needs: BuildandPush
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout source code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Get Kubernetes Config
+      id: getconfig
+      run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
+
+    - name: Login to ECR
+      run: |
+        kubectc get secret regcred || \
+        kubectl create secret docker-registry regcred \
+          --docker-server=${{ secrets.REGISTRY }} \
+          --docker-username=AWS \
+          --docker-password=${{ aws ecr get-login-password }}
+
+    - name: Deploy with Helm
+      uses: bitovi/github-actions-deploy-eks-helm@1.2.12
+      with:
+        aqs-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        cluster-name: ${{ env.EKS_CLUSTER }}
+        chart-path: helm/appcharts
+        namespace: default
+        values: appimage=${{ env.ECR_REPOSITORY }}/${{ env.ECR_REPOSITORY }},apptag=${{ github.run_number }}
+        name: webapp-stack
+      
+    - name: Show Pods
+      run: kubectl get pod -A
+    
+    - name: Show SVC
+      run: kubectl get ingress
