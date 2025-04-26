@@ -14,7 +14,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: php-app-service
+                name: phpapp-service
                 port:
                   number: 80
 
@@ -27,4 +27,4 @@ spec:
               service:
                 name: phpmyadmin-service
                 port:
-                  number: 8081
+                  number: 80

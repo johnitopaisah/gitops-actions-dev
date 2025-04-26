@@ -5,5 +5,5 @@ metadata:
 data:
   MYSQL_DATABASE: contactform
   S3_BUCKER_NAME: freedevopsclass-mybucket
-  REGION        : us-east-1
-  db-url        : mysql-service
+  REGION: us-east-1
+  db_url: mysql-service
